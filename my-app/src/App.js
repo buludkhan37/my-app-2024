@@ -1,57 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-
-const now = new Date();
-
-// export const App = () => {
-// 	return (
-// 		<div className="App">
-// 			<header className="App-header">
-// 				<img src={logo} className="App-logo" alt="logo" />
-// 				<p>
-// 					Edit <code>src/App.js</code> and save to reload.
-// 				</p>
-// 				<a
-// 					className="App-link"
-// 					href="https://reactjs.org"
-// 					target="_blank"
-// 					rel="noopener noreferrer"
-// 				>
-// 					Learn React
-// 				</a>
-// 				<span>{now.getFullYear()}</span>
-// 			</header>
-// 		</div>
-// 	);
-// };
+import { useState } from 'react';
+import styles from './App.module.css';
 
 export const App = () => {
-	return React.createElement(
-		'div',
-		{ className: 'App' },
-		React.createElement(
-			'header',
-			{ className: 'App-header' },
-			React.createElement('img', { src: logo, className: 'App-logo', alt: 'logo' }),
-			React.createElement(
-				'p',
-				null,
-				'Edit',
-				React.createElement('code', null, 'src/App.js'),
-				' and save to reload',
-			),
-			React.createElement(
-				'a',
-				{
-					className: 'App-link',
-					href: 'https://reactjs.org',
-					target: '_blink',
-					rel: 'noopener noreferrer',
-				},
-				'Learn React',
-			),
-			React.createElement('span', null, now.getFullYear()),
-		),
+	const [value, setValue] = useState('');
+	const [list, setList] = useState([]);
+	const [error, setError] = useState('');
+
+	const onInputButtonClick = () => {
+		let promtValue = prompt('Введите значениe');
+		if (promtValue.length < 3) {
+			setError('Введенное значение должно содержать минимум 3 символа');
+			setValue('');
+		} else {
+			setValue(promtValue);
+			setError('');
+		}
+	};
+
+	const isValueValid = value.length >= 3;
+
+	const currentDate = new Date();
+	const formatedDate = ` - ${String(currentDate.getDate())}.${String(currentDate.getMonth() + 1)}.${String(currentDate.getFullYear())} ${String(currentDate.getHours())}:${String(currentDate.getMinutes())}:${String(currentDate.getSeconds())}`;
+	const updatedList = [...list, { id: Date.now(), value, createdAt: formatedDate }];
+
+	const onAddButtonClick = () => {
+		if (value.length >= 3) {
+			setList(updatedList);
+			setValue('');
+			setError('');
+		}
+	};
+
+	return (
+		<div className={styles.app}>
+			<h1 className={styles.pageHeading}>Ввод значения</h1>
+			<p className={styles.noMarginText}>
+				Текущее значение <code>value</code>: "
+				<output className={styles.currentValue}>{value}</output>"
+			</p>
+			{error && <div className={styles.error}>{error}</div>}
+			<div className={styles.buttonsContainer}>
+				<button onClick={onInputButtonClick} className={styles.button}>
+					Ввести новое
+				</button>
+				<button
+					onClick={onAddButtonClick}
+					className={styles.button}
+					disabled={!isValueValid}
+				>
+					Добавить в список
+				</button>
+			</div>
+			<div className={styles.listContainer}>
+				<h2 className={styles.listHeading}>Список:</h2>
+				{list.length === 0 && (
+					<p className={styles.noMarginText}>Нет добавленных элементов</p>
+				)}
+				<ul className={styles.list}>
+					{list.map((item) => (
+						<li key={item.id} className={styles.listItem}>
+							{item.value}
+							<span>{item.createdAt}</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
 	);
 };
