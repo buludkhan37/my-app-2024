@@ -1,9 +1,9 @@
-import styles from './app.module.css';
+import styles from './App.module.css';
 import data from './data.json';
 import { useState } from 'react';
 
 export const App = () => {
-	const [steps, setSteps] = useState(data);
+	const [steps] = useState(data);
 	const [activeIndex, setActiveIndex] = useState(0);
 
 	let isOnFirstStep = activeIndex === 0;
@@ -34,20 +34,20 @@ export const App = () => {
 						{steps[activeIndex].content}
 					</div>
 					<ul className={styles['steps-list']}>
-						{steps.map((item, index) => {
+						{steps.map((item, index, id) => {
 							let stepClasses = styles['steps-item'];
 							if (index < activeIndex) stepClasses += ' ' + styles.done;
 							if (index === activeIndex) stepClasses += ' ' + styles.active;
 
 							return (
-								<li key={index} className={stepClasses}>
+								<li key={id} className={stepClasses}>
 									<button
 										onClick={() => setActiveIndex(index)}
 										className={styles['steps-item-button']}
 									>
 										{index + 1}
 									</button>
-									Шаг {index + 1}
+									{item.title}
 								</li>
 							);
 						})}
