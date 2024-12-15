@@ -34,13 +34,14 @@ export const App = () => {
 						{steps[activeIndex].content}
 					</div>
 					<ul className={styles['steps-list']}>
-						{steps.map((item, index, id) => {
+						{steps.map((item, index) => {
+							console.log(item.id);
 							let stepClasses = styles['steps-item'];
 							if (index < activeIndex) stepClasses += ' ' + styles.done;
 							if (index === activeIndex) stepClasses += ' ' + styles.active;
 
 							return (
-								<li key={id} className={stepClasses}>
+								<li key={item.id} className={stepClasses}>
 									<button
 										onClick={() => setActiveIndex(index)}
 										className={styles['steps-item-button']}
